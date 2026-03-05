@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S V.SURIYA'S FocusAPP</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+color:white;
+background:linear-gradient(270deg,#667eea,#764ba2,#6a11cb,#2575fc);
+background-size:800% 800%;
+animation:bg 15s ease infinite;
+}
+
+@keyframes bg{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.container{
+width:90%;
+max-width:1000px;
+margin:auto;
+padding:20px;
+}
+
+h1{
+text-align:center;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.box{
+background:rgba(0,0,0,0.3);
+padding:20px;
+border-radius:10px;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:8px;
+border:none;
+border-radius:6px;
+}
+
+button{
+margin-top:10px;
+padding:10px 15px;
+border:none;
+border-radius:6px;
+background:#ff9800;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+background:#ff5722;
+}
+
+#timer{
+font-size:40px;
+margin:10px 0;
+}
+
+.task{
+background:rgba(255,255,255,0.2);
+padding:8px;
+margin-top:6px;
+border-radius:6px;
+display:flex;
+justify-content:space-between;
+}
+
+.progressbar{
+background:#444;
+height:20px;
+border-radius:10px;
+overflow:hidden;
+margin-top:10px;
+}
+
+.progress{
+background:#4caf50;
+height:100%;
+width:0%;
+}
+
+.dark{
+background:black;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>S V. SURIYA's FOCUSAPP</h1>
+<p style="text-align:center">Created by S V. Suriya(VISIT ALL SIMPLIFIED YT CHANNEL FOR FURTHER DETAILS)</p>
+
+<button onclick="toggleMode()">Toggle Dark / Light</button>
+
+<div class="grid">
+
+<div class="box">
+
+<h2>Study Planner</h2>
+
+<input id="subject" placeholder="Subject">
+<input id="days" type="number" placeholder="Days">
+<input id="hours" type="number" placeholder="Total Hours">
+
+<button onclick="generatePlan()">Generate Plan</button>
+
+<p id="plan"></p>
+
+</div>
+
+<div class="box">
+
+<h2>Focus Timer</h2>
+
+<div id="timer">25:00</div>
+
+<button onclick="startTimer()">Start</button>
+<button onclick="resetTimer()">Reset</button>
+
+</div>
+
+<div class="box">
+
+<h2>Task Manager</h2>
+
+<input id="taskInput" placeholder="Add study task">
+
+<button onclick="addTask()">Add Task</button>
+
+<div id="taskList"></div>
+
+<div class="progressbar">
+<div id="progress" class="progress"></div>
+</div>
+
+</div>
+
+<div class="box">
+
+<h2>Motivation</h2>
+
+<button onclick="newQuote()">New Quote</button>
+
+<p id="quote"></p>
+
+<h3>🔥 Study Streak</h3>
+<p id="streak"></p>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function generatePlan(){
+let subject=document.getElementById("subject").value
+let days=document.getElementById("days").value
+let hours=document.getElementById("hours").value
+
+let perDay=(hours/days).toFixed(1)
+
+document.getElementById("plan").innerHTML=
+"Study <b>"+subject+"</b> for <b>"+perDay+"</b> hours per day."
+}
+
+let time=1500
+let interval
+
+function startTimer(){
+
+clearInterval(interval)
+
+interval=setInterval(function(){
+
+let min=Math.floor(time/60)
+let sec=time%60
+
+document.getElementById("timer").innerText=
+min+":"+(sec<10?"0":"")+sec
+
+time--
+
+if(time<0){
+clearInterval(interval)
+alert("Session Complete!")
+updateStreak()
+}
+
+},1000)
+
+}
+
+function resetTimer(){
+clearInterval(interval)
+time=1500
+document.getElementById("timer").innerText="25:00"
+}
+
+let tasks=[]
+let completed=0
+
+function addTask(){
+
+let input=document.getElementById("taskInput")
+let task=input.value
+
+if(!task)return
+
+tasks.push(task)
+
+let div=document.createElement("div")
+div.className="task"
+
+let span=document.createElement("span")
+span.innerText=task
+
+let btn=document.createElement("button")
+btn.innerText="Done"
+
+btn.onclick=function(){
+div.remove()
+completed++
+updateProgress()
+}
+
+div.appendChild(span)
+div.appendChild(btn)
+
+document.getElementById("taskList").appendChild(div)
+
+input.value=""
+
+updateProgress()
+
+}
+
+function updateProgress(){
+
+let percent=(completed/tasks.length)*100||0
+
+document.getElementById("progress").style.width=percent+"%"
+
+}
+
+let quotes=[
+"Success comes from discipline.",
+"Small progress every day matters.",
+"Focus on improvement.",
+"Study today for a better tomorrow.",
+"Consistency creates success."
+]
+
+function newQuote(){
+
+let q=quotes[Math.floor(Math.random()*quotes.length)]
+
+document.getElementById("quote").innerText=q
+
+}
+
+function toggleMode(){
+
+document.body.classList.toggle("dark")
+
+}
+
+function updateStreak(){
+
+let streak=localStorage.getItem("streak")||0
+
+streak++
+
+localStorage.setItem("streak",streak)
+
+document.getElementById("streak").innerText=streak+" days"
+
+}
+
+document.getElementById("streak").innerText=
+(localStorage.getItem("streak")||0)+" days"
+
+newQuote()
+
+</script>
+
+</body>
+</html>
